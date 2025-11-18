@@ -69,7 +69,7 @@ baseline_all |> select(treatment, age, ecog, gleason_8, psa) |>
 
 # 6. Export datasets ----------------------------------------------------
 peace_ipd <- list() # Create a list to then apply MAIC by outcome
-peace_ipd$OS <- select(baseline_all, !c(time_pfs, time_pfs)) |> 
+peace_ipd$OS <- select(baseline_all, !c(time_pfs, event_pfs)) |> 
   rename(time = time_death,
          event = event_death)
 
