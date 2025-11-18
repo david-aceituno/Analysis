@@ -48,7 +48,7 @@ baseline_all <- peace3_bsl |>
     treatment = TRT01P,
     ecog = BASEWHO, #ECOG and WHO performance scales are equivalent
     age = AGE,
-    gleason_8 = if_else(GLEASONN >= 8, ">=8", "<8", missing = NA),
+    gleason_8 = if_else(GLEASONN >= 8, 1, 0, missing = NA), # all covariates must be numeric for MAIC
     psa =  PSABL) |> 
   select(USUBJID, treatment, time_death, event_death, event_pfs, time_pfs, 
          age, ecog, gleason_8, psa)  |> 
