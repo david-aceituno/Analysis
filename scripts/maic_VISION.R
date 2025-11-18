@@ -1,6 +1,6 @@
 # MAIC comparing Ra223+ENZ vs Pluvicto
 # Input: PEACE-3 IPD prepared in PEACE3_data_preparation_MAIC.R
-# Output:
+# Output: MAIC-adjusted OS and PFS tables
 # Author: David Aceituno
 # Date: 2025-11-18
 
@@ -20,8 +20,7 @@ comparator_ipd$OS <- read_csv(here(km_directory, "OS_VISION_PLU.csv"))
 comparator_ipd$PFS <- read_csv(here(km_directory, "PFS_VISION_PLU.csv"))
 
 # Load comparator baseline data
-comparator_baseline <- as.data.frame(read_xlsx(here("data", "baseline_VISION.xlsx")))
-
+comparator_baseline <- as.data.frame(read_xlsx(here("data", "baseline_VISION.xlsx"))) #note: ECOG in VISION include ECOG 0-1
 
 # 3. Prepare data for MAIC --------------------------------------------------------
 outcome_names <- c("OS", "PFS")
@@ -39,10 +38,10 @@ maic_ipd <- list()
 results_table <- matrix(nrow = 2, ncol = 7)
 rownames(results_table) <- paste(rep(c("OS", "PFS"), length(comparator_names)), 
                                  rep(comparator_names, each = length(outcome_names)))
-colnames(results_table) <- c("Naive median survival Regorafenib", 
+colnames(results_table) <- c("Naive median survival Ra223+ENZ", 
                              "Naive median survival Comparator",
                              "Naive HR",
-                             "MAIC median survival Regorafenib",
+                             "MAIC median survival Ra223+ENZ",
                              "MAIC median survival Comparator",
                              "MAIC HR",
                              "ESS")
@@ -53,8 +52,8 @@ comparator_study <- "VISION"
 # 2. Run MAIC --------------------------------------------------------
 for(outcome_name in outcome_names) {
   # Remove the placebo patients from peace3 IPD and combine with comparator data
-  maic_ipd[[outcome_name]] <- peace3_ipd[[outcome_name]][peace3_ipd[[outcome_name]]$TRT01P == "Regorafenib 160 mg", ]
-  maic_ipd[[outcome_name]]  <- maic_ipd[[outcome_name]][, c("TRT01P", "sora_outcome_time", "outcome_event", matching_variables)]
+  maic_ipd[[outcome_name]] <- peace3_ipd[[outcome_name]][peace3_ipd[[outcome_name]]$treatment == "Radium-223 + Enzalutamide", ]
+  maic_ipd[[outcome_name]]  <- maic_ipd[[outcome_name]][, c("treatment", "time", "event", matching_variables)]
   
   # Harmonise names and change time to years
   colnames(maic_ipd[[outcome_name]]) <- c("TRT01P", "time", "event", matching_variables)
