@@ -146,3 +146,13 @@ extract_surv_fit_updated <- function(surv_object) {
   return(summary_surv)
 }
 
+# Assumes input is vector of mean, lower and upper bounds
+format_continuous_result <- function(x, n_digits = 2) {
+  formatted_result <- paste0(format(x[1], digits = n_digits, nsmall = n_digits), " (",
+                             format(x[2], digits = n_digits, nsmall = n_digits), ", ",
+                             format(x[3], digits = n_digits, nsmall = n_digits), ")")
+  if(length(x) == 4) formatted_result <- paste0(formatted_result, " p=", 
+                                                format(x[4], digits = n_digits, nsmall = n_digits))
+  
+  return(formatted_result)
+}
