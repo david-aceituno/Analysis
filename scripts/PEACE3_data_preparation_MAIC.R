@@ -49,9 +49,10 @@ baseline_all <- peace3_bsl |>
     ecog = BASEWHO, #ECOG and WHO performance scales are equivalent
     age = AGE,
     gleason_8 = if_else(GLEASONN >= 8, 1, 0, missing = NA), # all covariates must be numeric for MAIC
-    psa =  PSABL) |> 
+    psa =  PSABL,
+    psa_log = log(PSABL)) |> 
   select(USUBJID, treatment, time_death, event_death, event_pfs, time_pfs, 
-         age, ecog, gleason_8, psa)  |> 
+         age, ecog, gleason_8, psa, psa_log)  |> 
   distinct(USUBJID, .keep_all = TRUE)
 
 # Create table by treatment (just to check concordance with published data)
