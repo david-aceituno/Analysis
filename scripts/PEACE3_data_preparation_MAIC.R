@@ -35,7 +35,7 @@ tte_all <- full_join(death_df, pfs_df, by = "USUBJID")
 
 
 # Quick check  
-nrow(tte_all) # 413 participants (check with Howard why there are 33 fewer patients than Tombal 2023)
+nrow(tte_all) # 413 participants (check with Howard why there are 33 fewer patients than Tombal 2023) <- patients didn't consent as per Chris email 18th Nov
 sum(tte_all$event_death) # 219 events 
 sum(tte_all$event_pfs) # 275 events 
 
@@ -46,16 +46,16 @@ peace3_bsl <- merge(tte_all, adsl, by = "USUBJID", all.x = TRUE)
 baseline_all <- peace3_bsl |> 
   mutate(
     treatment = TRT01P,
-    who = BASEWHO,
+    ecog = BASEWHO, #ECOG and WHO performance scales are equivalent
     age = AGE,
-    gleason_m8 = if_else(GLEASONN >= 8, ">=8", "<8", missing = NA),
+    gleason_8 = if_else(GLEASONN >= 8, ">=8", "<8", missing = NA),
     psa =  PSABL) |> 
   select(USUBJID, treatment, time_death, event_death, event_pfs, time_pfs, 
-         age, who, gleason_m8, psa)  |> 
+         age, ecog, gleason_8, psa)  |> 
   distinct(USUBJID, .keep_all = TRUE)
 
-# Create table by treatment
-baseline_all |> select(treatment, age, who, gleason_m8, psa) |> 
+# Create table by treatment (just to check concordance with published data)
+baseline_all |> select(treatment, age, ecog, gleason_8, psa) |> 
   tbl_summary(by = treatment,
               statistic = list(
                 age ~ "{mean} ({sd})",                          
@@ -63,10 +63,18 @@ baseline_all |> select(treatment, age, who, gleason_m8, psa) |>
                 all_categorical() ~ "{n} ({p}%)"),
               label = list(
                 age        ~ "Age, years",
-                who        ~ "WHO performance status",
-                gleason_m8 ~ "Gleason score ≥8",
+                ecog        ~ "WHO performance status",
+                gleason_8 ~ "Gleason score ≥8",
                 psa        ~ "PSA, µg/L"), missing_text = "Missing") |> add_overall(last = TRUE)
 
 # 6. Export datasets ----------------------------------------------------
-write_csv(baseline_all, here(results_directory, "PEACE3_ipd_for_MAIC.csv"))
-saveRDS(baseline_all, here("data", "peace3_ipd_for_MAIC.RDS"))
+peace_ipd <- list() # Create a list to then apply MAIC by outcome
+peace_ipd$OS <- select(baseline_all, !c(time_pfs, time_pfs)) |> 
+  rename(time = time_death,
+         event = event_death)
+
+peace_ipd$PFS <- select(baseline_all, !c(time_death, event_death)) |> 
+  rename(time = time_pfs,
+         event = event_pfs)
+
+saveRDS(peace_ipd, here("data", "peace3_ipd_for_MAIC.RDS"))
