@@ -141,10 +141,10 @@ for(outcome_name in outcome_names) {
   # Weighted means
   baseline_table["Ra223+ENZ weighted", ] <- (hat_w %*% x_ipd_uncentered) / sum(hat_w)
   
-  write.csv(baseline_table, here("results", paste0("baseline_table_", comparator_name, ".csv")))
+  write.csv(baseline_table, here("results", paste0("baseline_table_", comparator_name, "_", comparator_study, ".csv")))
   
   # Export a histogram of patient weights
-  jpeg(here("results", paste0("weights_histogram_", comparator_name, "_", outcome_name, ".jpg")))
+  jpeg(here("results", paste0("weights_histogram_", comparator_name, "_", outcome_name, "_", comparator_study, ".jpg")))
   hist(hat_w, breaks = 20, main = "Histogram of patient weights", xlab = "")
   dev.off()
   
@@ -161,14 +161,14 @@ for(outcome_name in outcome_names) {
   
   # Summarise the results with KM curves
   # KM unweighted (naive)
-  jpeg(here("results", paste0("naive_km_", comparator_name, "_", outcome_name, ".jpg")))
+  jpeg(here("results", paste0("naive_km_", comparator_name, "_", outcome_name, "_", comparator_study, ".jpg")))
   print(ggsurvplot(km_fit[[outcome_name]], data = maic_ipd[[outcome_name]], risk.table = TRUE, risk.table.height = 0.35, legend.labs =
                      c("Pluvicto", "Radium-223 + Enzalutamide"), xlab="Time in years", ylab = outcome_name,
                    linetype = c(1:2)))
   dev.off()
   
   # KM weighed by MAIC
-  jpeg(here("results", paste0("maic_km_", comparator_name, "_", outcome_name, ".jpg")))
+  jpeg(here("results", paste0("maic_km_", comparator_name, "_", outcome_name, "_", comparator_study, ".jpg")))
   print(ggsurvplot(maic_km_fit[[outcome_name]], data = maic_ipd[[outcome_name]], risk.table = TRUE, risk.table.height = 0.35, legend.labs =
                      c("Pluvicto", "Radium-223 + Enzalutamide"), xlab="Time in years", ylab = outcome_name,
                    linetype = c(1:2)))
