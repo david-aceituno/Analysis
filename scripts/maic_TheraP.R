@@ -25,7 +25,7 @@ comparator_baseline <- comparator_baseline |> mutate(psa_log = log(psa))
 
 # 3. Prepare data for MAIC --------------------------------------------------------
 outcome_names <- c("OS", "PFS")
-matching_variables <- c("age", "gleason_8", "psa_log") # can't use ecog as TheraP reported 0 or 1
+matching_variables <- c("age", "gleason_8", "ecog", "psa_log") 
 
 # Comparator name
 comparator_names <- c("Pluvicto")
