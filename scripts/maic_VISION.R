@@ -1,4 +1,4 @@
-# MAIC comparing Ra223+ENZ vs Pluvicto
+# MAIC comparing Ra223+ENZ vs Pluvicto (comparator trial: VISION)
 # Input: PEACE-3 IPD prepared in PEACE3_data_preparation_MAIC.R
 # Output: MAIC-adjusted OS and PFS tables
 # Author: David Aceituno
